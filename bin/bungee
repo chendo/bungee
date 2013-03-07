@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'commander/import'
+
+$LOAD_PATH << File.join(File.dirname(__FILE__), "../lib")
+
+require 'bundler/setup'
+require 'bungee'
+
+program :version, Bungee::VERSION
+program :description, 'Backs up and restores Elasticsearch indexes'
+
+command :backup do |c|
+  c.syntax = 'bungee backup [options] <index>'
+  c.summary = ''
+  c.description = ''
+  c.example 'Performs a backup from 3 nodes', 'bungee backup --backup-path="backup_host:index_foo" --data-path=/var/lib/elasticsearch/my_cluster --hosts="elastic1,elastic2,elastic3" index_foo'
+  c.option "--data-path PATH", String, "Path to Elasticsearch data directory on server"
+  c.option "--hosts HOSTS", Array, "List of elasticsearch hosts the backup should be done from"
+  c.option "--url ES_URL", String, "URL to Elasticsearch"
+  c.option "--backup-path PATH", String, "Path to backup destination reachable by all servers. <user>@<host>:<path> allowed"
+  c.action do |args, options|
+    opts = {
+      :index => args.first,
+      :hosts => options.hosts,
+      :data_path => options.data_path,
+      :backup_path => options.backup_path,
+      :elasticsearch_url => options.url,
+    }
+    backup = Bungee::Backup.new(opts)
+    backup.backup!
+  end
+end
+

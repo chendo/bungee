@@ -19,4 +19,5 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency('rye', '~> 0.9.2')
   gem.add_dependency('commander', '~> 4.1.3')
+  gem.add_dependency('json')
 end
